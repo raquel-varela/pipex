@@ -1,39 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   test_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/12 12:25:25 by rvarela           #+#    #+#             */
-/*   Updated: 2024/05/17 17:50:18 by rvarela-         ###   ########.fr       */
+/*   Created: 2024/05/17 16:37:52 by rvarela-          #+#    #+#             */
+/*   Updated: 2024/05/17 16:58:13 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <errno.h>
+#include "../includes/pipex.h"
+#include <string.h>
 
-typedef struct s_pipex
+char	**ft_split(char *str, char sep);
+
+void	get_cmd_path(char *cmd)
 {
-	int		fd_in;
-	int		fd_out;
-	int		cmd_count;
-	int		pipe_fd;
-	char	**args_path;
-	char	***arsg_cmd
-}		t_pipex;
+	char	**cmd_split;
+	//char	*path;
 
-//utils
-void    error_msg(char *str);
+	cmd_split = ft_split(cmd, ' ');
+	execlp("whereis", "whereis", "-b", cmd_split[0], NULL);
+}
 
-
-//path
-char    **get_paths(char **env);
-
-#endif
+int main()
+{
+    get_cmd_path("grep ");
+    return (0);
+}

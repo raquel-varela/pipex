@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+         #
+#    By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 12:23:29 by rvarela           #+#    #+#              #
-#    Updated: 2024/05/12 12:23:32 by rvarela          ###   ########.fr        #
+#    Updated: 2024/05/17 17:58:27 by rvarela-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,7 @@ INC_DIR = includes
 LIBFT = libft/libft.a
 LIBFT_DIR = libft
 
-SRC = main.c
+SRC = main.c pipex_utils.c get_path.c
 
 OBJ = $(addprefix $(SRC_DIR)/, $(SRC:.c=.o))
 

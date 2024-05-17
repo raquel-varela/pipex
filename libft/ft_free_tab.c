@@ -1,39 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   ft_free_tab.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/12 12:25:25 by rvarela           #+#    #+#             */
-/*   Updated: 2024/05/17 17:50:18 by rvarela-         ###   ########.fr       */
+/*   Created: 2024/05/17 17:53:38 by rvarela-          #+#    #+#             */
+/*   Updated: 2024/05/17 17:55:28 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
-# include <unistd.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <errno.h>
+#include "libft.h"
 
-typedef struct s_pipex
+void    ft_free_tab(char **tab)
 {
-	int		fd_in;
-	int		fd_out;
-	int		cmd_count;
-	int		pipe_fd;
-	char	**args_path;
-	char	***arsg_cmd
-}		t_pipex;
+	int	i;
 
-//utils
-void    error_msg(char *str);
-
-
-//path
-char    **get_paths(char **env);
-
-#endif
+	i = 0;
+	while(tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
