@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 12:23:50 by rvarela           #+#    #+#             */
-/*   Updated: 2024/05/17 17:47:46 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/05/23 17:35:08 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,7 @@
 	return (i - 3);
 }*/
 
-/*char	get_cmd_path(char *cmd)
-{
-	char	**cmd_split;
-	char	*path;
-
-	cmd_split = ft_split(cmd, ' ');
-	path = whereis(cmd_split[0]);
-	return (path);
-}*/
-
-void	open_infile(char *infile)
+static void	open_infile(char *infile)
 {
 	int	fd_in;
 
@@ -52,74 +42,47 @@ void	open_infile(char *infile)
 	close(fd_in);
 }
 
-//void	sendto_outfile(char *outfile, char *cmd2, char **path, char **env)
-
-//pipex function
-void	pipex(char **av, char **path, char **env)
+static void	child_process(char **av, char **envp, int *pipes)
 {
-	while (i <= data->cmd_count)
-	{
-		pipe(pipes[i]);
-		if (pipe(pipes[i]) == -1)
-			error_msg("Error creating pipes!\n!");
-		i++;
-	}
-	i = 0;
-	while (i < data->cmd_count)
-	{
-		pids[i] = fork();
-		if (pids[i] == -1)
-			error_msg("Error creating child!\n!");
-		if (pids[i] == 0)
-		{
-			j = 0;
-			while (j <= data->cmd_count)
-			{
-				if (i != j)
-					close(pipes[j][0]);
-				if (i + 1 != j)
-					close(pipes[j][1]);
-			}
-
-			//Child code
-			
-		}
-		//Parent (main) code
-
-
-
-
-		close(pipes[0][1]);
-		close(pipes[data->cmd_count][0]);
-		i = 0;
-		while (i++ < data->cmd_count)
-			wait(NULL);
-	}
+	close(pipes[0]);
+	dup2(pipes[1], STDOUT_FILENO);
+	close(pipes[1]);
+	cmd_exec(av[2], envp);
 }
 
-
-int	main(int ac, char **av, char **env)
+static void	parent_process(char **av, char **envp, int *pipes)
 {
-	/*t_pipex	*data;
-	int		*pids;
-	int		**pipes;
-	int		i;
-	int		j;*/
-	char	**paths;
+	int	fd_out;
+
+	fd_out = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (fd_out == -1)
+		error_msg("Error opening OUTFILE!\n");
+	dup2(fd_out, STDOUT_FILENO);
+	close(fd_out);
+	close(pipes[1]);
+	dup2(pipes[0], STDIN_FILENO);
+	close(pipes[0]);
+	cmd_exec(av[3], envp);
+}
 
 	//check input file (file, permissions, redirect to STDIN FD1)
+	//open INFILE and check
+int	main(int ac, char **av, char **envp)
+{
+	int	pipes[2];
+	int	pid;
+
 	if (ac != 5)
 		error_msg("Input should be: INFILE cmd1 cmd2 OUTFILE!\n");
-	
-	//open INFILE and check
 	open_infile(av[1]);
-	
-	//get_path
-	paths = get_paths(env);
-	if (!paths)
-		error_msg("Error getting paths!\n");
-	
-	//pipex
-	pipex(av, paths, env);
+	if (pipe(pipes) == -1)
+		error_msg("Error creating pipe!\n");
+	pid = fork();
+	if (pid == -1)
+		error_msg("Error creating child process!\n");
+	if (pid == 0)
+		child_process(av, envp, pipes);
+	waitpid(pid, NULL, 0);
+	parent_process(av, envp, pipes);
+	return (0);
 }
-
