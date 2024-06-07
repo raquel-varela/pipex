@@ -1,16 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main _bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/12 12:23:50 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/07 15:50:49 by rvarela-         ###   ########.fr       */
+/*   Created: 2024/06/07 15:54:17 by rvarela-          #+#    #+#             */
+/*   Updated: 2024/06/07 16:48:28 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+
+int	get_cmd_num(int ac, char **av)
+{
+	int	i;
+
+	i = 0;
+	while (av)
+		i++;
+	return (i - 3);
+}*/
 
 static void	open_infile(char *infile)
 {
@@ -32,19 +42,19 @@ static void	open_infile(char *infile)
 	close(fd_in);
 }
 
-static void	child_process(char **av, char **envp, int *pipes)
+static void	child_process(char *av, char **envp, int *pipes)
 {
 	close(pipes[0]);
 	dup2(pipes[1], STDOUT_FILENO);
 	close(pipes[1]);
-	cmd_exec(av[2], envp);
+	cmd_exec(av, envp);
 }
 
-static void	parent_process(char **av, char **envp, int *pipes)
+static void	parent_process(int ac, char *av, char **envp, int *pipes)
 {
 	int	fd_out;
 
-	fd_out = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd_out == -1)
 		error_msg("Error opening OUTFILE!\n");
 	dup2(fd_out, STDOUT_FILENO);
@@ -52,7 +62,7 @@ static void	parent_process(char **av, char **envp, int *pipes)
 	close(pipes[1]);
 	dup2(pipes[0], STDIN_FILENO);
 	close(pipes[0]);
-	cmd_exec(av[3], envp);
+	cmd_exec(av, envp);
 }
 
 	//check input file (file, permissions, redirect to STDIN FD1)
@@ -61,18 +71,31 @@ int	main(int ac, char **av, char **envp)
 {
 	int	pipes[2];
 	int	pid;
+	int	i;
 
-	if (ac != 5)
-		error_msg("Input should be: INFILE cmd1 cmd2 OUTFILE!\n");
+	i = 2;
+	if (ac < 5)
+		error_msg("Input should be: INFILE cmd1 cmd2 cmdx OUTFILE\n\
+				OR\nhere_doc LIMITER cmd1 cmd2 cmdx OUTFILE");
+	/*if (strncmp(av[1], "here_doc", 8) == 0)
+	{
+		exec_heredoc(av);
+		i = 3;
+	}
+	else*/
 	open_infile(av[1]);
-	if (pipe(pipes) == -1)
-		error_msg("Error creating pipe!\n");
-	pid = fork();
-	if (pid == -1)
-		error_msg("Error creating child process!\n");
-	if (pid == 0)
-		child_process(av, envp, pipes);
-	waitpid(pid, NULL, 0);
-	parent_process(av, envp, pipes);
+	while (i < ac - 2)
+	{
+		if (pipe(pipes) == -1)
+			error_msg("Error creating pipe!\n");
+		pid = fork();
+		if (pid == -1)
+			error_msg("Error creating child process!\n");
+		if (pid == 0)
+			child_process(av[i], envp, pipes);
+		waitpid(pid, NULL, 0);
+		parent_process(ac, av[i], envp, pipes);
+		i++;
+	}
 	return (0);
 }

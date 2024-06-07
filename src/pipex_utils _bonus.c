@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils.c                                      :+:      :+:    :+:   */
+/*   pipex_utils _bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/17 15:49:32 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/07 15:51:21 by rvarela-         ###   ########.fr       */
+/*   Created: 2024/06/07 15:54:26 by rvarela-          #+#    #+#             */
+/*   Updated: 2024/06/07 15:54:57 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "../includes/pipex_bonus.h"
 
 void	error_msg(char *str)
 {
 	perror(str);
 	exit(EXIT_FAILURE);
 }
+
+/*void	error_freetab(char **tab, char *str)
+{
+	ft_free_tab(tab);
+	error_msg(str);
+}*/
 
 void	cmd_exec(char *av, char **envp)
 {
