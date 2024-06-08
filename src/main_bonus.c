@@ -6,21 +6,11 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 15:54:17 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/07 16:48:28 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/08 19:32:23 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
-
-int	get_cmd_num(int ac, char **av)
-{
-	int	i;
-
-	i = 0;
-	while (av)
-		i++;
-	return (i - 3);
-}*/
 
 static void	open_infile(char *infile)
 {

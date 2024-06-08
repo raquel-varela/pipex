@@ -6,7 +6,7 @@
 #    By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 12:23:29 by rvarela           #+#    #+#              #
-#    Updated: 2024/06/07 15:48:58 by rvarela-         ###   ########.fr        #
+#    Updated: 2024/06/08 19:59:06 by rvarela-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ bonus: $(OBJ_BONUS) $(LIBFT)
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c
 	cc $(CFLAGS) -c $< -I $(INC_DIR) -o $@
-
+	
 $(LIBFT):
 	$(MAKE) $(MKFLAG) -C $(LIBFT_DIR)
 
