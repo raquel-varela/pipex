@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main _bonus.c                                      :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 15:54:17 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/08 19:32:23 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/13 17:11:54 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ static void	child_process(char *av, char **envp, int *pipes)
 	cmd_exec(av, envp);
 }
 
-static void	parent_process(int ac, char *av, char **envp, int *pipes)
+static void	parent_process(char *file_out, char *av, char **envp, int *pipes)
 {
-	int	fd_out;
+	int		fd_out;
 
-	fd_out = open(av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	fd_out = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd_out == -1)
 		error_msg("Error opening OUTFILE!\n");
 	dup2(fd_out, STDOUT_FILENO);
@@ -84,7 +84,7 @@ int	main(int ac, char **av, char **envp)
 		if (pid == 0)
 			child_process(av[i], envp, pipes);
 		waitpid(pid, NULL, 0);
-		parent_process(ac, av[i], envp, pipes);
+		parent_process(av[ac - 1], av[i], envp, pipes);
 		i++;
 	}
 	return (0);
