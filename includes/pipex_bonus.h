@@ -6,7 +6,7 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 12:25:25 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/07 15:56:04 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:20:38 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,8 @@
 void	error_msg(char *str);
 void	cmd_exec(char *av, char **envp);
 char	*get_path(char *cmd, char **envp);
+int		count_cmds(int ac, char **av);
+void	open_infile(char *infile);
+void	open_outfile(char *outfile);
 
 #endif

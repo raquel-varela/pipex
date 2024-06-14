@@ -1,22 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils.c                                      :+:      :+:    :+:   */
+/*   pipex_utils_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/17 15:49:32 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/14 17:32:15 by rvarela-         ###   ########.fr       */
+/*   Created: 2024/06/07 15:54:26 by rvarela-          #+#    #+#             */
+/*   Updated: 2024/06/14 14:45:38 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "../includes/pipex_bonus.h"
 
 void	error_msg(char *str)
 {
 	perror(str);
 	exit(EXIT_FAILURE);
 }
+
+/*void	error_freetab(char **tab, char *str)
+{
+	ft_free_tab(tab);
+	error_msg(str);
+}*/
 
 void	cmd_exec(char *av, char **envp)
 {
@@ -27,7 +33,7 @@ void	cmd_exec(char *av, char **envp)
 	path = get_path(cmd[0], envp);
 	if (!path)
 	{
-		ft_free_tab((void **)cmd);
+		ft_free_tab(cmd);
 		error_msg("Error getting command path!\n");
 	}
 	if (execve(path, cmd, envp) == -1)
@@ -61,13 +67,3 @@ char	*get_path(char *cmd, char **envp)
 	return (0);
 }
 
-int	count_cmds(int ac, char **av)
-{
-	int	cmds;
-
-	if (strncmp(av[1], "here_doc", 8) == 0)
-		cmds = ac - 4;  
-	else
-		cmds = ac - 3;
-	return (cmds);
-}

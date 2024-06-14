@@ -3,89 +3,106 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/07 15:54:17 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/13 17:11:54 by rvarela          ###   ########.fr       */
+/*   Created: 2024/06/14 18:19:49 by rvarela-          #+#    #+#             */
+/*   Updated: 2024/06/14 18:25:13 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/pipex.h"
+#include "../includes/pipex_bonus.h"
 
-static void	open_infile(char *infile)
+
+static void	child_process(char **av, char **envp, int **pipes, int i)
 {
-	int	fd_in;
+	int	ac;
+	int	cmds_nbr;
 
-	if (access(infile, F_OK | R_OK) == 0)
-	{
-		fd_in = open(infile, O_RDONLY);
-		if (fd_in == -1)
-			error_msg("Error opening INFILE!\n!");
-	}
+	ac = 0;
+	while (av[ac])
+		ac++;
+	cmds_nbr = count_cmds(ac, av);
+	if (i == 0)   //se estas no primeiro comando
+		open_infile(av[1]);
 	else
 	{
-		fd_in = open(infile, O_RDONLY, 0644);
-		if (fd_in == -1)
-			error_msg("Error opening INFILE!\n!");
+		dup2(pipes[i - 1][0], STDIN_FILENO);
+	    close(pipes[i - 1][0]);
 	}
-	dup2(fd_in, STDIN_FILENO);
-	close(fd_in);
+	if (i == cmds_nbr - 1) //se estas no ultimo cmd
+		open_outfile(av[ac - 1]);
+	else
+	{
+		dup2(pipes[i][1], STDOUT_FILENO);
+		close(pipes[i][1]);
+	}
+	cmd_exec(av[i + 2], envp);
 }
 
-static void	child_process(char *av, char **envp, int *pipes)
+static int	**pipes_init(int cmds_nbr)
 {
-	close(pipes[0]);
-	dup2(pipes[1], STDOUT_FILENO);
-	close(pipes[1]);
-	cmd_exec(av, envp);
+	int	**pipes;
+	int	i;
+
+	pipes = (int **)malloc(sizeof(int *) * (cmds_nbr));
+	if (pipes == NULL)
+		return (0);
+	pipes[cmds_nbr - 1] = NULL;
+	i = 0;
+	while (i < cmds_nbr - 1)
+	{
+		pipes[i] = (int *)malloc(2 * sizeof(int));
+		if (pipes[i++] == NULL)
+		{
+			ft_free_tab((void **)pipes);
+			return (0);
+		}
+	}
+	i = 0;
+	while (i < cmds_nbr - 1)
+	{
+		if (pipe(pipes[i++]) == -1)
+			error_msg("Error creating pipe!\n");
+	}
+	return (pipes);
 }
 
-static void	parent_process(char *file_out, char *av, char **envp, int *pipes)
+static void	pipex(int cmds_nbr, char **av, char **envp)
 {
-	int		fd_out;
-
-	fd_out = open(file_out, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (fd_out == -1)
-		error_msg("Error opening OUTFILE!\n");
-	dup2(fd_out, STDOUT_FILENO);
-	close(fd_out);
-	close(pipes[1]);
-	dup2(pipes[0], STDIN_FILENO);
-	close(pipes[0]);
-	cmd_exec(av, envp);
-}
-
-	//check input file (file, permissions, redirect to STDIN FD1)
-	//open INFILE and check
-int	main(int ac, char **av, char **envp)
-{
-	int	pipes[2];
+	int	**pipes;
 	int	pid;
 	int	i;
 
-	i = 2;
+	pipes = pipes_init(cmds_nbr);
+	i = 0;
+	while (i < cmds_nbr)
+	{
+		pid = fork();
+		if (pid == -1)
+			error_msg("Error creating child process!\n");
+		if (pid == 0)
+			child_process(av, envp, pipes, i);
+		i++;
+	}
+	while (i--)
+		waitpid(-1, NULL, 0);
+	ft_free_tab((void **)pipes);
+}
+
+int	main(int ac, char **av, char **envp)
+{
+	int	cmds_nbr;
+
 	if (ac < 5)
 		error_msg("Input should be: INFILE cmd1 cmd2 cmdx OUTFILE\n\
-				OR\nhere_doc LIMITER cmd1 cmd2 cmdx OUTFILE");
+				OR\nhere_doc LIMITER cmd1 cmd2 cmdx OUTFILE\n");
+	cmds_nbr = count_cmds(ac, av);
 	/*if (strncmp(av[1], "here_doc", 8) == 0)
 	{
 		exec_heredoc(av);
 		i = 3;
 	}
 	else*/
-	open_infile(av[1]);
-	while (i < ac - 2)
-	{
-		if (pipe(pipes) == -1)
-			error_msg("Error creating pipe!\n");
-		pid = fork();
-		if (pid == -1)
-			error_msg("Error creating child process!\n");
-		if (pid == 0)
-			child_process(av[i], envp, pipes);
-		waitpid(pid, NULL, 0);
-		parent_process(av[ac - 1], av[i], envp, pipes);
-		i++;
-	}
+	pipex(cmds_nbr, av, envp);
 	return (0);
 }

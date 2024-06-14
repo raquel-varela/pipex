@@ -6,7 +6,7 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/04 15:15:19 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/05/17 17:56:02 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/14 17:13:04 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,6 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 char	*ft_strncpy(char *s1, char *s2, int n);
 int		count_words(char *str, char sep);
 int		ft_atoi_hex(char *nptr);
-void	ft_free_tab(char **tab);
+void	ft_free_tab(void **tab);
 
 #endif
