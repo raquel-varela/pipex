@@ -6,14 +6,13 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 12:23:50 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/14 18:17:59 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/17 18:16:10 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-
-static void	child_process(char **av, char **envp, int **pipes, int i)
+static void	child_process(char **av, char **envp, int *pipes, int i)
 {
 	int	ac;
 	int	cmds_nbr;
@@ -22,58 +21,33 @@ static void	child_process(char **av, char **envp, int **pipes, int i)
 	while (av[ac])
 		ac++;
 	cmds_nbr = count_cmds(ac, av);
-	if (i == 0)   //se estas no primeiro comando
+	if (i == 0)
 		open_infile(av[1]);
 	else
 	{
-		dup2(pipes[i - 1][0], STDIN_FILENO);
-	    close(pipes[i - 1][0]);
+		close(pipes[1]);
+		dup2(pipes[0], STDIN_FILENO);
+		close(pipes[0]);
 	}
-	if (i == cmds_nbr - 1) //se estas no ultimo cmd
+	if (i == cmds_nbr - 1)
 		open_outfile(av[ac - 1]);
 	else
 	{
-		dup2(pipes[i][1], STDOUT_FILENO);
-		close(pipes[i][1]);
+		close(pipes[0]);
+		dup2(pipes[1], STDOUT_FILENO);
+		close(pipes[1]);
 	}
 	cmd_exec(av[i + 2], envp);
 }
 
-static int	**pipes_init(int cmds_nbr)
-{
-	int	**pipes;
-	int	i;
-
-	pipes = (int **)malloc(sizeof(int *) * (cmds_nbr));
-	if (pipes == NULL)
-		return (0);
-	pipes[cmds_nbr - 1] = NULL;
-	i = 0;
-	while (i < cmds_nbr - 1)
-	{
-		pipes[i] = (int *)malloc(2 * sizeof(int));
-		if (pipes[i++] == NULL)
-		{
-			ft_free_tab((void **)pipes);
-			return (0);
-		}
-	}
-	i = 0;
-	while (i < cmds_nbr - 1)
-	{
-		if (pipe(pipes[i++]) == -1)
-			error_msg("Error creating pipe!\n");
-	}
-	return (pipes);
-}
-
 static void	pipex(int cmds_nbr, char **av, char **envp)
 {
-	int	**pipes;
+	int	pipes[2];
 	int	pid;
 	int	i;
 
-	pipes = pipes_init(cmds_nbr);
+	if (pipe(pipes) == -1)
+		error_msg("Error creating pieps!\n");
 	i = 0;
 	while (i < cmds_nbr)
 	{
@@ -84,9 +58,10 @@ static void	pipex(int cmds_nbr, char **av, char **envp)
 			child_process(av, envp, pipes, i);
 		i++;
 	}
+	close(pipes[0]);
+	close(pipes[1]);
 	while (i--)
 		waitpid(-1, NULL, 0);
-	ft_free_tab((void **)pipes);
 }
 
 int	main(int ac, char **av, char **envp)

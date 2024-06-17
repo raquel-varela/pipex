@@ -6,7 +6,7 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 15:49:32 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/14 17:32:15 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:57:46 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	count_cmds(int ac, char **av)
 	int	cmds;
 
 	if (strncmp(av[1], "here_doc", 8) == 0)
-		cmds = ac - 4;  
+		cmds = ac - 4;
 	else
 		cmds = ac - 3;
 	return (cmds);

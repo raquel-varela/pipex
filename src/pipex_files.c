@@ -6,7 +6,7 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:26:22 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/14 17:29:55 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/17 17:56:34 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ void	open_infile(char *infile)
 
 void	open_outfile(char *outfile)
 {
-    int fd_out;
-    
-    fd_out = open (outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	int	fd_out;
+
+	fd_out = open (outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd_out == -1)
 		error_msg("Error opening OUTFILE!\n");
 	dup2(fd_out, STDOUT_FILENO);

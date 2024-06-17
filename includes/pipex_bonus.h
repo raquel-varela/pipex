@@ -6,7 +6,7 @@
 /*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 12:25:25 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/14 18:20:38 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:08:29 by rvarela-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,13 @@
 
 //utils
 void	error_msg(char *str);
-void	cmd_exec(char *av, char **envp);
+void	error_free_pipes(char *str, int **pipes);
+void	cmd_exec(char *av, char **envp, int **pipes);
 char	*get_path(char *cmd, char **envp);
 int		count_cmds(int ac, char **av);
-void	open_infile(char *infile);
-void	open_outfile(char *outfile);
+void	open_infile(char *infile, int **pipes);
+void	open_outfile(char *outfile, int **pipes);
+void	close_all_pipes_read(int **pipes);
+void	close_all_pipes_write(int **pipes);
 
 #endif
