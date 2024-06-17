@@ -3,28 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:19:49 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/17 19:11:26 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/17 22:22:09 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-static void	child_process(char **av, char **envp, int **pipes, int i)
+static void	child_files_closes(char **av, int **pipes, int i, int ac)
 {
-	int	ac;
 	int	cmds_nbr;
 
-	ac = 0;
-	while (av[ac])
-		ac++;
 	cmds_nbr = count_cmds(ac, av);
 	if (!pipes)
 		return ;
 	if (i == 0)
-		open_infile(av[1], pipes);
+	{
+		if (strncmp(av[1], "here_doc", 9) != 0)
+			open_infile(av[1], pipes);
+		else
+			open_heredoc(av[2], pipes);
+	}
 	else
 	{
 		dup2(pipes[i - 1][0], STDIN_FILENO);
@@ -37,7 +38,22 @@ static void	child_process(char **av, char **envp, int **pipes, int i)
 		dup2(pipes[i][1], STDOUT_FILENO);
 		close_all_pipes_write(pipes);
 	}
-	cmd_exec(av[i + 2], envp, pipes);
+}
+
+static void	child_process(char **av, char **envp, int **pipes, int i)
+{
+	int	ac;
+
+	ac = 0;
+	while (av[ac])
+		ac++;
+	if (!pipes)
+		return ;
+	child_files_closes(av, pipes, i, ac);
+	if (strncmp(av[1], "here_doc", 9) == 0)
+		cmd_exec(av[i + 3], envp, pipes);
+	else
+		cmd_exec(av[i + 2], envp, pipes);
 }
 
 static int	**pipes_init(int cmds_nbr)

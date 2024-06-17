@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+         #
+#    By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/12 12:23:29 by rvarela           #+#    #+#              #
-#    Updated: 2024/06/14 17:27:41 by rvarela-         ###   ########.fr        #
+#    Updated: 2024/06/17 22:00:04 by rvarela          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ LIBFT_DIR = libft
 
 SRC = main.c pipex_utils.c pipex_files.c
 
-SRC_BONUS = main_bonus.c pipex_utils_bonus.c pipex_files_bonus.c
+SRC_BONUS = main_bonus.c pipex_utils_bonus.c pipex_files_bonus.c pipex_heredoc.c
 
 OBJ = $(addprefix $(SRC_DIR)/, $(SRC:.c=.o))
 
