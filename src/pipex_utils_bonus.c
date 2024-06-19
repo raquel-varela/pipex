@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:19:12 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/17 19:12:32 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/18 22:35:20 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	error_msg(char *str)
 {
-	perror(str);
+	ft_printf("%s", str);
 	exit(EXIT_FAILURE);
 }
 

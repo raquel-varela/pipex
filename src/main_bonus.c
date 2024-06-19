@@ -6,7 +6,7 @@
 /*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:19:49 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/17 22:22:09 by rvarela          ###   ########.fr       */
+/*   Updated: 2024/06/19 21:47:46 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ static void	child_files_closes(char **av, int **pipes, int i, int ac)
 		return ;
 	if (i == 0)
 	{
-		if (strncmp(av[1], "here_doc", 9) != 0)
+		if (strncmp(av[1], "here_doc", 8) != 0)
 			open_infile(av[1], pipes);
-		else
-			open_heredoc(av[2], pipes);
+		/*else
+			open_heredoc(av[2], pipes);*/
 	}
 	else
 	{
@@ -90,6 +90,8 @@ static void	pipex(int cmds_nbr, char **av, char **envp)
 	pipes = pipes_init(cmds_nbr);
 	if (!pipes)
 		return ;
+	if (strncmp(av[1], "here_doc", 8) == 0)
+		open_heredoc(av[2], pipes);
 	i = 0;
 	while (i < cmds_nbr)
 	{

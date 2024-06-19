@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 12:23:50 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/17 18:16:10 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/18 22:33:58 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ int	main(int ac, char **av, char **envp)
 	int	cmds_nbr;
 
 	if (ac != 5)
+	{
 		error_msg("Input should be: INFILE cmd1 cmd2 OUTFILE!\n");
+		return (1);
+	}
 	cmds_nbr = count_cmds(ac, av);
 	pipex(cmds_nbr, av, envp);
 	return (0);
