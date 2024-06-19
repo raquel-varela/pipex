@@ -6,7 +6,7 @@
 /*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 21:57:43 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/19 22:36:30 by rvarela          ###   ########.fr       */
+/*   Updated: 2024/06/19 22:59:01 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@ void	error_heredoc(char *str, char *heredoc, int **pipes)
 	exit(EXIT_FAILURE);
 }
 
-static void	heredoc_in(char *heredoc, int **pipes)
+static void	heredoc_in(char *doc, int **pipes)
 {
 	int	fd_here;
 
-	fd_here = open(heredoc, O_RDONLY);
+	fd_here = open(doc, O_RDONLY, 0777);
 	if (fd_here == -1)
-		error_heredoc("Error reading here_doc!\n", heredoc, pipes);
+		error_heredoc("Error reading here_doc!\n", doc, pipes);
 	dup2(fd_here, STDIN_FILENO);
 	close(fd_here);
-	unlink(heredoc);
+	unlink(doc);
 }
 
 void	open_heredoc(char *limiter, int **pipes)
@@ -37,9 +37,9 @@ void	open_heredoc(char *limiter, int **pipes)
 	int		fd_tmp;
 	char	*line;
 
-	fd_tmp = open("heredoc.txt", O_CREAT, O_RDWR, O_APPEND, 0777);
+	fd_tmp = open("tmpdoc", O_CREAT | O_RDWR | O_APPEND, 0777);
 	if (fd_tmp == -1)
-		error_heredoc("Here_doc Error!\n", "heredoc", pipes);
+		error_heredoc("Here_doc Error!\n", "tmpdoc", pipes);
 	while (1)
 	{
 		write(1, "Here_doc> ", 10);
@@ -56,5 +56,5 @@ void	open_heredoc(char *limiter, int **pipes)
 		free(line);
 	}
 	close(fd_tmp);
-	heredoc_in("heredoc.txt", pipes);
+	heredoc_in("tmpdoc", pipes);
 }
