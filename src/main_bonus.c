@@ -6,7 +6,7 @@
 /*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 18:19:49 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/19 23:03:56 by rvarela          ###   ########.fr       */
+/*   Updated: 2024/06/20 21:12:39 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	child_files_closes(char **av, int **pipes, int i, int ac)
 		close_all_pipes_read(pipes);
 	}
 	if (i == cmds_nbr - 1)
-		open_outfile(av[ac - 1], pipes);
+		open_outfile(av[1], av[ac - 1], pipes);
 	else
 	{
 		dup2(pipes[i][1], STDOUT_FILENO);

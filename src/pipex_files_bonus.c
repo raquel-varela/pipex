@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_files_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rvarela- <rvarela-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 17:34:49 by rvarela-          #+#    #+#             */
-/*   Updated: 2024/06/17 19:12:12 by rvarela-         ###   ########.fr       */
+/*   Updated: 2024/06/20 21:17:44 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,16 @@ void	open_infile(char *infile, int **pipes)
 	close_all_pipes_read(pipes);
 }
 
-void	open_outfile(char *outfile, int **pipes)
+void	open_outfile(char *heredoc, char *outfile, int **pipes)
 {
 	int	fd_out;
 
 	if (!pipes)
 		return ;
-	fd_out = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (strncmp(heredoc, "here_doc", 8) == 0)
+		fd_out = open(outfile, O_RDWR | O_APPEND | O_CREAT, 0777);
+	else
+		fd_out = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd_out == -1)
 		error_free_pipes("Error opening OUTFILE!\n", pipes);
 	dup2(fd_out, STDOUT_FILENO);

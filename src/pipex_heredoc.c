@@ -6,7 +6,7 @@
 /*   By: rvarela <rvarela@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 21:57:43 by rvarela           #+#    #+#             */
-/*   Updated: 2024/06/19 22:59:01 by rvarela          ###   ########.fr       */
+/*   Updated: 2024/06/19 23:08:09 by rvarela          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	open_heredoc(char *limiter, int **pipes)
 	int		fd_tmp;
 	char	*line;
 
-	fd_tmp = open("tmpdoc", O_CREAT | O_RDWR | O_APPEND, 0777);
+	fd_tmp = open("tmpdoc", O_RDWR | O_CREAT | O_APPEND, 0777);
 	if (fd_tmp == -1)
 		error_heredoc("Here_doc Error!\n", "tmpdoc", pipes);
 	while (1)
